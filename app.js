@@ -1,5 +1,14 @@
 var koa = require('koa');
 var app = koa();
+var router = require('koa-router')();
+ 
+router.get('User', function () {
+console.log();
+});
+ 
+app
+  .use(router.routes())
+  .use(router.allowedMethods());
 
 // x-response-time
 app.use(function *(next){

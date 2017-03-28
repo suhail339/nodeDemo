@@ -8,6 +8,8 @@ app.use(function *(next){
   var ms = new Date - start;
   this.set('X-Response-Time', ms + 'ms');
   this.set('Warning', 'hello to response');
+
+  this.cookies.set('custom_cookie', 'some dummy values to show');
 });
 
 // logger
@@ -25,9 +27,9 @@ app.use(function *(){
 });
 
 //error event listner
-app.on('error', function(err,ctx){
-log.error('server error', err,ctx);
-});
+//app.on('error', function(err,ctx){
+//log.error('server error', err,ctx);
+//});
 
 app.listen(3000);
 console.log("on 3000");
