@@ -66,7 +66,7 @@ describe('User', function() {
       
     describe('same ?', function() {
         it('check if both users are same', function() {
-        assert.equal(afi.name,sheeba.name);
+        assert.notEqual(afi.name,sheeba.name);
         });
     });
   });
@@ -90,4 +90,27 @@ describe('arr', function() {
       user.save(done);
     });
   });
-});*/
+});
+
+*/
+
+/*
+var mulsA = [[1,2,3]
+            ,[4,5,6]
+            ,[7,8,9]];
+
+var counter = 0;
+for(var i = 0; i < mulsA.length; i++) {
+    var mulA = mulsA[i];
+    for(var j = 0; j < mulA.length; j++) {
+                  counter ++;
+         //describe('matching', function() {
+              // pending test below due to no call back function
+           //   it('matched ?', function() {
+                  //assert.equal(mulA[j],counter);
+             //   });
+          //});
+          console.log(mulA[j] == counter);
+    }
+}
+*/
