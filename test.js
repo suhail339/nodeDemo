@@ -1,5 +1,5 @@
 var assert = require('assert');
-
+//var Promise = require('bluebird');
 /*
 var demoUser = require('./models/users');
 describe('User', function(){
@@ -81,7 +81,12 @@ describe('arr', function() {
   });
 });
 
-//////////////////////////////////////////////////////////
+
+
+
+///////////////////////////Promise///////////////////////////////
+
+///////////////////////////Promise///////////////////////////////
 
 /*describe('User', function() {
   describe('#save()', function() {
