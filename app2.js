@@ -10,6 +10,7 @@ function testPromise(param){
     });  
 }
 
+
 testPromise('world !!')
 .then(function(finalResult){console.log("Hello " + finalResult)})
 .error(function(e){console.log("Error handler " + e)})
