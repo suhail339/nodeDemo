@@ -1,0 +1,17 @@
+User.checkMac = function*(limit,skip){
+    console.log('entered in model');
+     var result ;
+     result = yield r.table(TABLE).hasFields('macAddress')
+     .orderBy(r.desc('createdAt'))
+     //.filter(function(d) {
+    //return r.not(d.hasFields('isFishy'))
+    //})
+     .pluck('id','macAddress')
+     .limit(limit)
+     .skip(skip)
+     .run();
+
+     //console.log(result);
+     return result;
+
+};

@@ -1,41 +1,43 @@
 var koa = require('koa'),
-co = require('co'),
-monk = require('monk'),
-wrap = require('co-monk'),
-Promise = require('bluebird');
-var requestSync = require('sync-request');
-var schedule = require('node-schedule');
-var userModel = require('./../models/user');
+co = require('co'),//for non blocking execution
+//monk = require('monk'),
+wrap = require('co-monk');
+//Promise = require('bluebird'),
+requestSync = require('sync-request'),//synchronized http requests
+schedule = require('node-schedule'),
+userModel = require('./../models/user');
 
-var sch_Date = '58 12 * * *'; //seconds minutes hours day month year || more detail is at the end of the file
+var sch_Date = '01 17 * * *'; //schedule date - seconds minutes hours day month year || more detail is at the end of the file
 
-var skipArg = process.argv[2];
-var limitArg = process.argv[3];
+var skipArg = process.argv[2];//first argument from command line
+var limitArg = process.argv[3];//second argument from command line
 
-//set default values
+//Set command argument's validation
 if(!limitArg || !skipArg){
+    console.log('\x1b[31m','Warning !!!');
     console.log('\x1b[32m','Both skip and limit parameters are expected');
     console.log('\x1b[33m','e.g: node scripts/MacValidate 10 10');
     process.exit();
 }
 else{
-
     limitArg = parseInt(limitArg);
     skipArg = parseInt(skipArg);
 
     if(isNaN(limitArg) || isNaN(skipArg)){
+        console.log('\x1b[31m','Warning !!!');
         console.log('\x1b[32m','parameters are integers');
         process.exit();
     }
 }
 
-console.log(' skip : ',skipArg,' limit : ',limitArg);
+//console.log(' skip : ',skipArg,' limit : ',limitArg);
 
-var records;
+var records; //variable to hold all records
 
+//wraping function for yield and generator functions
 co.wrap(function *(){
 
-records = yield userModel.checkMac(limitArg,skipArg); //take records for only having no isFishy field
+records = yield userModel.checkMac(limitArg,skipArg); //take records from user table
 
 var i = schedule.scheduleJob(sch_Date, function(){
 
@@ -49,14 +51,11 @@ var i = schedule.scheduleJob(sch_Date, function(){
 			try{
 					var res = requestSync('GET', 'https://api.macvendors.com/'+records[a].macAddress,options);
                     console.log('Sync : mac address ',JSON.stringify(records[a].macAddress),' : ',JSON.stringify(res.getBody('utf8')));
-                    records[a].varMac = records[a].macAddress;
                     records[a].isFishy = false;
                     records[a].vendor = res.getBody('utf8');
 			}
 			catch(err){
                     console.log('Sync : mac address ',JSON.stringify(records[a].macAddress),' : ',err.statusCode);
-
-                    records[a].varMac = records[a].macAddress;
                     records[a].isFishy = true;
                     records[a].vendor = err.statusCode;
 			}
