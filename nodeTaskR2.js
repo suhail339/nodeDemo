@@ -7,7 +7,7 @@ requestSync = require('sync-request'),//synchronized http requests
 schedule = require('node-schedule'),
 userModel = require('./../models/user');
 
-var sch_Date = '01 17 * * *'; //schedule date - seconds minutes hours day month year || more detail is at the end of the file
+var sch_Date = '19 14 * * *'; //schedule date - seconds minutes hours day month year || more detail is at the end of the file
 
 var skipArg = process.argv[2];//first argument from command line
 var limitArg = process.argv[3];//second argument from command line
@@ -33,7 +33,8 @@ else{
 //console.log(' skip : ',skipArg,' limit : ',limitArg);
 
 var records; //variable to hold all records
-
+var valid = 0;
+var invalid = 0;
 //wraping function for yield and generator functions
 co.wrap(function *(){
 
@@ -41,32 +42,36 @@ records = yield userModel.checkMac(limitArg,skipArg); //take records from user t
 
 var i = schedule.scheduleJob(sch_Date, function(){
 
-	console.log('record length : ',records.length);
+    console.log('record length : ',records.length);
 
-	var options = {
-	    json: true //Automatically parses the JSON string in the response 
-			};
-		for(var a = 0;a < records.length;a++){
+    var options = {
+        json: true //Automatically parses the JSON string in the response 
+            };
+        for(var a = 0;a < records.length;a++){
 
-			try{
-					var res = requestSync('GET', 'https://api.macvendors.com/'+records[a].macAddress,options);
+            try{
+                    var res = requestSync('GET', 'https://api.macvendors.com/'+records[a].macAddress,options);
                     console.log('Sync : mac address ',JSON.stringify(records[a].macAddress),' : ',JSON.stringify(res.getBody('utf8')));
                     records[a].isFishy = false;
                     records[a].vendor = res.getBody('utf8');
-			}
-			catch(err){
+                    valid+=1;
+            }
+            catch(err){
                     console.log('Sync : mac address ',JSON.stringify(records[a].macAddress),' : ',err.statusCode);
                     records[a].isFishy = true;
                     records[a].vendor = err.statusCode;
-			}
-		}
+                    invalid+=1;
+            }
+        }
             console.log('///////////////////////////////');
-			console.log('Complete Result ',records);
+            console.log('Complete Result ',records);
+            console.log('valid Result ',valid);
+            console.log('invalid Result ',invalid);
 
             console.log("*****************Process Ended*****************");
             process.exit();
 
-			//user records updation code goes here
+            //user records updation code goes here
 
 });
 })()
