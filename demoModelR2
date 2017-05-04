@@ -10,10 +10,6 @@ User.checkMac = function*(limit,skip){
      .limit(limit)
      .skip(skip)
      .run();
-
      //console.log(result);
      return result;
-
 };
-
-
