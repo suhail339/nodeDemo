@@ -19,7 +19,9 @@
     "rebuild": "^0.1.2",
     "request": "^2.81.0",
     "request-sync": "^1.0.0",
-    "sync-request": "^4.0.2"
+    "socket.io": "^2.0.1",
+    "sync-request": "^4.0.2",
+    "watson-developer-cloud": "^2.31.1"
   },
   "devDependencies": {
     "babel-cli": "^6.24.0",
